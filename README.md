@@ -475,6 +475,7 @@ The test is to be performed individually and in person.  It corresponds to 1/3 o
 Besides the project, students can be selected for a discussion about the project, as decided by the course instructors. For students who are called, the discussion is mandatory in order to be graded for the project.
 During the discussion, each student is expected to be able to demonstrate full knowledge of all details of the project. Each individual grade might be adjusted according to the student's performance during the discussion.
 
+
 ## 6\. Other Materials
 
 For each slice `slice.py` we provide the expected output `slice.output.json` according to vulnerability patterns `slice.patterns.json`.
