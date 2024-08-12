@@ -299,7 +299,7 @@ The security property that underlies this project is the following:
 
 _Given a set of vulnerability patterns of the form (vulnerability name, a set of entry points, a set of sensitive sinks, a set of sanitizing functions), a program is secure if it does not encode, for any given vulnerability pattern, an information flow from an entry point to a sensitive sink, unless the information goes through a sanitizing function._
 
-Using the same terms as in [Python Parser](https://docs.python.org/3/library/ast.html) the mandatory constructs are those associated with nodes of type
+Using the same terms as in [Python Parser](https://docs.python.org/3/library/ast.html) the mandatory constructs are those associated with nodes of type:
 
 - Expressions
   - Constant
@@ -313,6 +313,8 @@ Using the same terms as in [Python Parser](https://docs.python.org/3/library/ast
   - Assign
   - If
   - While
+ 
 
+----------
 
-(IST project)
+**(IST project)**
