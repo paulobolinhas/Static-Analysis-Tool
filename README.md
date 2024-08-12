@@ -31,7 +31,7 @@ should analyse `slice_1.py` slice, according to patterns in file `my_patterns.js
 
 #### Program slices
 
-Your program should read from a text file (given as first argument in the command line) the representation of a Python slice.  See [below](#processing) how you can easily convert it into an Abstract Syntax Tree (AST).
+The program should read from a text file (given as first argument in the command line) the representation of a Python slice.  See [below](#processing) how you can easily convert it into an Abstract Syntax Tree (AST).
 
 #### Vulnerability patterns
 
