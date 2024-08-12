@@ -21,32 +21,11 @@ The aim of the tool is to search the slices for vulnerabilities according to inp
 
 The tool should signal potential vulnerabilities and sanitization efforts: if it identifies a possible data flow from an entry point to a sensitive sink (according to the inputted patterns), it should report a potential vulnerability; if the data flow passes through a sanitization function (in other words, it is returned by the function), _it should still report the vulnerability_, but also acknowledge the fact that its sanitization is possibly being addressed.
 
-We provide program slices and patterns to assist you in testing the tool. It is however each group's responsibility to perform more extensive testing for ensuring the correctness and robustness of the tool. Note however that for the purpose of testing, the names of vulnerabilities, sources, sanitizers and sinks are irrelevant and do not need to be real vulnerabilities. In this context, you can produce your own patterns without specific knowledge of vulnerabilities, as this will not affect the ability of the tool to manage meaningful patterns. See examples in Section [Input Vulnerability Patterns](#input-vulnerability-patterns).
-
 ### Running the tool
-
-The tool should be called in the command line, and receive the following two arguments, and only the following two arguments:
-
-- the name of a Python file containing the program slice to analyse;
-- the name of a [JSON](http://www.json.org/) file containing the list of vulnerability patterns to consider.
-
-You can assume that the parsing of the Python slices has been done, and that the input files are [well-formed](#input-program-slices). The analysis should be fully customizable to the inputted [vulnerability patterns](#input-vulnerability-patterns) described below. In addition to the entry points specified in the patterns, **by default any non-instantiated variable that appears in the slice is to be considered as an entry point to all vulnerabilities being considered**.
-
-The output should list the potential vulnerabilities encoded in the slice, and an indication of which sanitization functions(s) (if any) have been applied. The format of the output is specified [below](#output).
-
-Your tool should be implemented in **Python, version >= 3.9.2**, and work in the following way:
-
-1. be named `py_analyser.py`
-2. be called in the command line with two arguments `<slice>.py` and `<patterns>.json`
-3. produce the output referred below and no other to a file named `<slice>.output.json` in the `./output/` folder.
-
-For example
 
     $ python ./py_analyser.py slice_1.py my_patterns.json
 
 should analyse `slice_1.py` slice, according to patterns in file `my_patterns.json`, and output the result in file `./output/slice_1.output.json`.
-
-NOTE: Scripts that validate the correct format of the pattern and output files will be made available during the first week of the project.
 
 ### Input
 
@@ -80,29 +59,7 @@ An example JSON file with three patterns:
       "implicit": "no"}
     ]
 
-### Processing
-
-The Python file (given as first argument in the command line) containing the Python slice should be converted into an Abstract Syntax Tree (AST).
-
-You can use Python's `ast` module to obtain a tree of objects whose classes all inherit from [ast.AST](https://docs.python.org/3/library/ast.html). The tool can work directly on this ast using the module's utility functions.
-
-You can also opt to work on a simplified representation of the AST where nodes are represented using dictionaries and lists. To this end, you can use
-
-```python
-ast_py = ast.parse(py_str)
-ast_dict = astexport.export.export_dict(ast_py)
-```
-
-In the above, `py_str` is the string containing the Python code, and `ast_dict` is a dictionary encoding of the ast that represents the code.
-The AST is represented in JSON, using the same structure as in [Python's AST module](https://docs.python.org/3.10/library/ast.html).
-
-The structure of Python's ASTs varies slightly with different Python versions. The examples below use Python 3.9 -- as in the labs, similar to 3.8 and 3.10. For instance, the program
-
-```python
-print("Hello World!")
-```
-
-is represented as
+as
 
     {
         "ast_type": "Module",
@@ -300,10 +257,6 @@ is represented as:
         "type_ignores": []
     }
 
-Note that not all of the information that is available in the AST needs necessarily to be used and stored by your program. This [tutorial](https://greentreesnakes.readthedocs.io/en/latest/) is a helpful resource.
-
-You can produce your own ASTs for testing your program by using a [python-to-json parser](https://pypi.org/project/astexport/). You can visualize the JSON outputs as a tree using [this online tool](http://jsonviewer.stack.hu/).
-
 ### Output
 
 The output of the program is a `JSON` list of vulnerability objects that should be written to a file `./output/<slice>.output.json` where `<slice>.py` is the program slice under analysis. The structure of the objects should include 5 pairs, with the following meaning:
@@ -346,14 +299,6 @@ The security property that underlies this project is the following:
 
 _Given a set of vulnerability patterns of the form (vulnerability name, a set of entry points, a set of sensitive sinks, a set of sanitizing functions), a program is secure if it does not encode, for any given vulnerability pattern, an information flow from an entry point to a sensitive sink, unless the information goes through a sanitizing function._
 
-You will have to make decisions regarding whether your tool will signal, or not, illegal taint flows that are encoded by certain combinations of program constructs. You can opt for an approach that simplifies the analysis. This simplification may introduce or omit features that could influence the outcome, thus leading to wrong results.
-
-Note that the following criteria will be valued:
-
-- _Soundness_ - successful detection of illegal taint flows (i.e., true positives). In particular, treatment of implicit taint flows will be valued.
-- _Precision_ - avoiding signalling programs that do not encode illegal taint flows (i.e., false-positives). In particular, sensitivity to the order of execution will be valued.
-- Scope - treatment of a larger subset of the language. The mandatory language constructs are those that appear in the slices provided, and include: assignments, binary operations, function calls, condition test and while loop.
-
 Using the same terms as in [Python Parser](https://docs.python.org/3/library/ast.html) the mandatory constructs are those associated with nodes of type
 
 - Expressions
@@ -368,5 +313,3 @@ Using the same terms as in [Python Parser](https://docs.python.org/3/library/ast
   - Assign
   - If
   - While
-
-When designing and implementing this component, you are expected to take into account and to incorporate precision and efficiency considerations, as presented in the critical analysis criteria below.
